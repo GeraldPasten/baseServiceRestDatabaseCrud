@@ -17,6 +17,18 @@ import com.mx.banorte.services.vo.Usuario;
 
 import io.quarkus.test.junit.QuarkusTest;
 
+/**
+ * Clase de pruebas unitarias escrita en Java utilizando el framework QuarkusTest 
+ * prueba el funcionamiento de diferentes funcionalidades relacionadas con la creación y actualización de usuarios.
+ * 
+ * La anotación @QuarkusTest indica que la clase es una prueba de Quarkus y debe ser ejecutada como tal.
+ * Las anotaciones @Inject se utilizan para inyectar instancias de diferentes objetos, como CamelContext, ProducerTemplate y EntityManager, en la clase de prueba.
+ * La anotación @Test se utiliza en cada uno de los métodos de prueba en la clase para indicar que son métodos de prueba unitaria. 
+ * La anotación @Transactional se utiliza en pruebas unitarias para indicar que las operaciones realizadas dentro del método de prueba deben ser ejecutadas en una transacción.
+ * @author RedHat
+ * 
+ */
+
 @QuarkusTest
 public class JuntiTestUsuario  {
     

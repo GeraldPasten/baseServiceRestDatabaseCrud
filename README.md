@@ -1,71 +1,52 @@
 # baseservice-rest-databese-crud
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Aplicación desarrollada utilizando Quarkus, Camel 3, JPA, Hibernate y rutas REST. La aplicación realiza operaciones CRUD en una base de datos utilizando JPA, y utiliza Camel para exponer puntos de acceso REST. También se proporcionan ejemplos de cómo manejar logs en Camel y configuraciones de Quarkus, cómo manejar excepciones, procesar datos de consultas y aplicar lógica de negocios. Además, se incluyen pruebas JUnit 5 con Camel y una carpeta "openshift" con configuraciones de rutas para OpenShift.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+# Tecnologías utilizadas
+Quarkus: Un framework de Java diseñado para aplicaciones nativas de la nube.
+Camel 3: Un framework de integración de código abierto que permite la implementación de patrones de integración empresarial.
+JPA (Java Persistence API): Una API estándar de Java para mapear objetos a bases de datos relacionales.
+Hibernate: Una implementación de JPA que proporciona una capa de persistencia para el acceso a bases de datos.
+REST: Un estilo arquitectónico para construir servicios web escalables y fáciles de consumir.
 
-## Running the application in dev mode
+# Configuración
+La configuración de la aplicación se encuentra en el archivo application.properties en la carpeta resources. Aquí se pueden ajustar diversos aspectos, como la configuración de la base de datos, los logs y otras propiedades específicas de Quarkus.
 
-You can run your application in dev mode that enables live coding using:
-```shell script
+# Uso de Camel para rutas REST
+La clase UsuarioResource utiliza Camel para definir rutas REST que se encargan de manejar las operaciones CRUD de la entidad Usuario. Se pueden agregar más rutas o modificar las existentes según sea necesario para adaptarse a los requisitos específicos del proyecto.
+
+# Manejo de logs
+La configuración de logs se encuentra en el archivo application.properties. Aquí se pueden ajustar los niveles de log para diferentes paquetes y clases, así como configurar la salida de los logs.
+
+Además, Camel proporciona su propio mecanismo de logging que se puede configurar mediante opciones específicas en las rutas.
+
+# Manejo de excepciones
+La aplicación muestra ejemplos de cómo manejar excepciones utilizando Camel. Se pueden agregar manejadores de excepciones personalizados en las rutas para capturar y manejar excepciones específicas según sea necesario.
+
+# Consultas y lógica de negocios
+La clase UsuarioService implementa la lógica de negocio relacionada con el manejo de usuarios. Aquí se pueden realizar consultas a la base de datos utilizando JPA y aplicar lógica de negocio adicional según sea necesario.
+
+# Pruebas JUnit 5 con Camel
+La clase UsuarioServiceTest en el directorio test contiene pruebas unitarias utilizando JUnit 5 y Camel. Estas pruebas permiten verificar el comportamiento esperado de los diferentes métodos de la clase UsuarioService.
+
+# Configuraciones de rutas para OpenShift
+La carpeta openshift contiene el archivo route-config.yaml, que proporciona configuraciones de rutas para OpenShift. Estas configuraciones se pueden utilizar para exponer los puntos de acceso REST de la aplicación en un clúster de OpenShift.
+
+# Comandos
+A continuación se presentan algunos comandos útiles para utilizar la aplicación:
+
+#### Ejecutar la aplicación en modo de desarrollo:
+
 ./mvnw compile quarkus:dev
-```
+Empaquetar y ejecutar la aplicación:
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
-
-## Packaging and running the application
-
-The application can be packaged using:
-```shell script
 ./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+java -jar target/quarkus-app/quarkus-run.jar
+Crear un ejecutable nativo:
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
 ./mvnw package -Pnative
-```
+Ejecutar el ejecutable nativo en un contenedor:
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
 
-You can then execute your native executable with: `./target/baseservice-rest-databese-crud-1.0.0-SNAPSHOT-runner`
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- Camel Log ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-log)): Log messages to the underlying logging mechanism
-- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and JPA
-- Camel Protobuf Jackson ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-jackson-protobuf)): Marshal POJOs to Protobuf and back using Jackson
-- JDBC Driver - H2 ([guide](https://quarkus.io/guides/datasource)): Connect to the H2 database via JDBC
-- Camel JPA ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-jpa)): Store and retrieve Java objects from databases using Java Persistence API (JPA)
-- Camel Direct ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-direct)): Call another endpoint from the same Camel Context synchronously
-- Camel Jackson ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-jackson)): Marshal POJOs to JSON and back using Jackson
-- Agroal - Database connection pool ([guide](https://quarkus.io/guides/datasource)): Pool JDBC database connections (included in Hibernate ORM)
-- Camel Bean ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-bean)): Invoke methods of Java beans
-- Camel JDBC ([guide](https://camel.apache.org/camel-quarkus/latest/reference/extensions/jdbc.html)): Access databases through SQL and JDBC
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
-- Camel Rest ([guide](https://access.redhat.com/documentation/en-us/red_hat_integration/2.latest/html/camel_extensions_for_quarkus_reference/extensions-rest)): Expose REST services and their OpenAPI Specification or call external REST services
-
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)

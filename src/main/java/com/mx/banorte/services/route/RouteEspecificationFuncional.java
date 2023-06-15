@@ -13,7 +13,16 @@ import org.hibernate.HibernateException;
 import com.mx.banorte.services.vo.PerfilUsuario;
 import com.mx.banorte.services.vo.Usuario;
 
-
+/**
+ * Clase que define las rutas y configuraciones de la aplicación que utiliza Quarkus, Camel, JPA, Hibernate y rutas REST.
+ * 
+ * En donde realiza un CRUD para las entidades PerfilUsuario Y Usuario que se manejan como entidades persistentes
+ * Esta anotación @ApplicationScoped marca la clase como un componente de alcance de aplicación. Indica que la instancia de esta clase será creada una vez por la aplicación y compartida entre múltiples hilos de ejecución.
+ * Esta anotación @Inject se utiliza para realizar la inyección de dependencias en los campos de la clase. Se utiliza para obtener instancias de otros componentes y recursos necesarios para el funcionamiento de la clase.
+ * Esta anotación @ConfigProperty se utiliza para inyectar valores de propiedades de configuración en los campos de la clase.
+ * 
+ * @author RedHat
+ */
 @ApplicationScoped
 public class RouteEspecificationFuncional extends RouteBuilder {
 
@@ -96,7 +105,7 @@ public class RouteEspecificationFuncional extends RouteBuilder {
                         .doCatch(HibernateException.class, PersistenceException.class)
                         .log("Error al Obtener perfiles de usuario: ${exception.message}")
                         .setBody(constant("Error al Obtener perfiles de usuario"))
-                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(204))
                         .end();
 
                         from("direct:getUser")
@@ -120,7 +129,7 @@ public class RouteEspecificationFuncional extends RouteBuilder {
                         .doCatch(HibernateException.class, PersistenceException.class)
                         .log("Error al Obtener usuarios: ${exception.message}")
                         .setBody(constant("Error al obtener usuario"))
-                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(204))
                         .end();
 
                         from("direct:crearUsuario")
@@ -152,7 +161,7 @@ public class RouteEspecificationFuncional extends RouteBuilder {
                         .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
                         .end();
 
-
+                        
 
         }  
     
