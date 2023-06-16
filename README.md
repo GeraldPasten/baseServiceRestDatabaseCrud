@@ -3,8 +3,17 @@
 Aplicación desarrollada utilizando Quarkus, Camel 3, JPA, Hibernate y rutas REST. La aplicación realiza operaciones CRUD en una base de datos utilizando JPA, y utiliza Camel para exponer puntos de acceso REST. También se proporcionan ejemplos de cómo manejar logs en Camel y configuraciones de Quarkus, cómo manejar excepciones, procesar datos de consultas y aplicar lógica de negocios. Además, se incluyen pruebas JUnit 5 con Camel y una carpeta "openshift" con configuraciones de rutas para OpenShift.
 
 
-
-- [ ] probando
+# Contenido
+- [ ] Endpoints Rest Camel
+- [ ] Recibir y producir JSON
+- [ ] Despliegue en ocp / Comandos OC
+- [ ] Carpeta Openshift
+- [ ] Parametrizacion y Configuracion
+- [ ] CRUD en JPA mediante CAMEL
+- [ ] Logica de negocios en rutas Camel
+- [ ] Configuracion de Logs 
+- [ ] Manejo de excepciones
+- [ ] Junit Test con Camel
 
 # Tecnologías utilizadas
 Quarkus: Un framework de Java diseñado para aplicaciones nativas de la nube.
