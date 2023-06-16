@@ -4,16 +4,16 @@ Aplicación desarrollada utilizando Quarkus, Camel 3, JPA, Hibernate y rutas RES
 
 
 # Contenido
-- [ ] Endpoints Rest Camel
-- [ ] Recibir y producir JSON
-- [ ] Despliegue en ocp / Comandos OC
-- [ ] Carpeta Openshift
-- [ ] Parametrizacion y Configuracion
-- [ ] CRUD en JPA mediante CAMEL
-- [ ] Logica de negocios en rutas Camel
-- [ ] Configuracion de Logs 
-- [ ] Manejo de excepciones
-- [ ] Junit Test con Camel
+- [ x ] Endpoints Rest Camel
+- [ x ] Recibir y producir JSON
+- [ x ] Despliegue en ocp / Comandos OC
+- [ x ] Carpeta Openshift
+- [ x ] Parametrizacion y Configuracion
+- [ x ] CRUD en JPA mediante CAMEL
+- [ x ] Logica de negocios en rutas Camel
+- [ x ] Configuracion de Logs 
+- [ x ] Manejo de excepciones
+- [ x ] Junit Test con Camel
 
 # Tecnologías utilizadas
 Quarkus: Un framework de Java diseñado para aplicaciones nativas de la nube.
