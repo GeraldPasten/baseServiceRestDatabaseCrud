@@ -1,0 +1,5 @@
+/home/gerald/Arquetype/baseservice-rest-databese-crud/src/main/java/com/mx/banorte/services/vo/PerfilUsuario.java
+/home/gerald/Arquetype/baseservice-rest-databese-crud/src/main/java/com/mx/banorte/services/route/UsuarioCrudRoutes.java
+/home/gerald/Arquetype/baseservice-rest-databese-crud/src/main/java/com/mx/banorte/services/vo/Usuario.java
+/home/gerald/Arquetype/baseservice-rest-databese-crud/src/main/java/com/mx/banorte/services/route/PerfilesUsuarioRoutes.java
+/home/gerald/Arquetype/baseservice-rest-databese-crud/src/main/java/com/mx/banorte/services/route/ApiClientRoutes.java

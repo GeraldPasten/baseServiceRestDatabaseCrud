@@ -8,26 +8,37 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity()
-@Table(name = "Perfiles")
+/* Esta clase del paquete vo se utiliza para declarar un entity para JPA en donde podre manipular la base de datos mediante este objeto,
+ * estos objetos son conocidos como Entity, las cuales son clases comunes y corrientes también llamada POJO’s.
+ * Esta clase tiene la particularidad de que esta mapeadas contra una tabla de la base de datos, dicho mapeo se lleva a cabo generalmente mediante Anotaciones:
+ * @Entity @Table @Id @GeneratedValue @Column @ManyToOne @JoinColumn.
+ * Dichas anotaciones brindan los suficientes metadatos como para poder por relacionar las clases contra las tablas y las propiedades contra las columnas.
+ * Es de esta forma que JPA es capaz de interactuar con la base de datos a través de las clases.
+ * 
+ * @Author Red Hat 
+ */
+
+@Entity()                                               // Se declara como una entidad JPA.
+@Table(name = "Perfiles")                               // Se declara como tabla llamada usuario.
 public class PerfilUsuario {
     
-    @JsonProperty
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty                                       // Se declara como una propiedad Json.
+    @Id                                                 // Se declara como id primario de la tabla.
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Especificamos com seberia generarse nuestro id.
     private int id;
 
     @JsonProperty
-    @Column
+    @Column                                             // Se declara como una columna de esta tabla.
     private String nombre;
 
     @JsonProperty
-    @ManyToOne()
-    @JoinColumn(name = "usuario_id")
+    @ManyToOne()                                        // Se establece una relacion de muchos a uno con la entidad Usuarios.
+    @JoinColumn(name = "usuario_id")                    // Se especifica la columna donde se hace la relacion
     private Usuario usuario;
+
+   // Getters and Setters de la clase
 
     public PerfilUsuario () {
 
@@ -49,11 +60,6 @@ public class PerfilUsuario {
         this.nombre = nombre;
     }
 
-    public void getIdInvalido() {
-        System.out.print("Ta malo el id");
-  
-    }
-
     public Usuario getUsuario() {
         return usuario;
     }
@@ -61,9 +67,4 @@ public class PerfilUsuario {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
-    
-
-    
-
 }

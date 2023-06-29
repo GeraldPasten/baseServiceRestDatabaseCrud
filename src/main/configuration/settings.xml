@@ -7,7 +7,7 @@
 	        <repository>
 	            <id>aedhat-openshift-releases</id>
 	            <name>Openshift Repository</name>
-	            <url>https://repo.adobe.com/nexus/content/groups/public</url>
+	            <url>https://repo.adobe.com/nexus/content/groups/public</url>  <!--Url del repositorio-->
 	            <releases>
 	                <enabled>true</enabled>
 	                <updatePolicy>never</updatePolicy>

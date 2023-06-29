@@ -10,19 +10,27 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hibernate.HibernateException;
-
 import com.mx.banorte.services.vo.Usuario;
 
-/**
- * Clase que define las rutas y configuraciones de la aplicación que utiliza Quarkus, Camel, JPA, Hibernate y rutas REST.
- * 
- * En donde realiza un CRUD para las entidades PerfilUsuario Y Usuario que se manejan como entidades persistentes
+/*
+ * Clase que define las rutas y configuraciones para levantar endpoints rest con Java DSL 
+ * Anotaciones utilizadas: 
  * Esta anotación @ApplicationScoped marca la clase como un componente de alcance de aplicación. Indica que la instancia de esta clase será creada una vez por la aplicación y compartida entre múltiples hilos de ejecución.
  * Esta anotación @Inject se utiliza para realizar la inyección de dependencias en los campos de la clase. Se utiliza para obtener instancias de otros componentes y recursos necesarios para el funcionamiento de la clase.
  * Esta anotación @ConfigProperty se utiliza para inyectar valores de propiedades de configuración en los campos de la clase.
+ * Esta anotación @Override se utiliza en Java para indicar que un método en una clase está siendo sobrescrito de una clase padre o de una interfaz.
  * 
- * @author RedHat
+ * Nuestra clase PerfilesUsuarioRoutes debe extenderse de La clase RouteBuilder ya que es una clase proporcionada por Apache Camel que se utiliza para construir y configurar rutas.
+ * Al hacerlo, se debe proporcionar una implementación del método configure(). Dentro de este método, puedes definir tus rutas Camel utilizando el lenguaje de dominio específico de Camel.
+ * 
+ * restConfiguration() Como configurar el modo de enlace JSON en la ruta. Esto indica que los datos se convertirán automáticamente entre formato JSON y objetos Java al utilizar la ruta REST.
+ * rest() Define la ruta base para todas las rutas REST. Todas las rutas definidas después de esto estarán anidadas bajo lo indicado.
+ * get()  Configura endpoint GET en la ruta Este endpoint responderá a las solicitudes GET.
+ * to()   Redirige la solicitud a una ruta, esto significa que cuando se reciba una solicitud GET en el endpoint se activara la ruta a la que se redirige.
+ *
+ * @Author Red Hat 
  */
+
 @ApplicationScoped
 public class UsuarioCrudRoutes extends RouteBuilder {
 
@@ -48,8 +56,7 @@ public class UsuarioCrudRoutes extends RouteBuilder {
                         .description("Details of an user by id")
                         .outType(Usuario.class)
                         .to("direct:getUser")
-
-                        
+   
                         //Creacion de la ruta Camel crearUsuario
                         .put("create")
                         .description("Crear un nuevo usuario")
