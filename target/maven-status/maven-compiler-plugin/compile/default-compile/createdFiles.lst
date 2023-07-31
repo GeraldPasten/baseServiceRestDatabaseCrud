@@ -1,0 +1,5 @@
+com/mx/banorte/services/vo/PerfilUsuario.class
+com/mx/banorte/services/route/ApiClientRoutes.class
+com/mx/banorte/services/route/UsuarioCrudRoutes.class
+com/mx/banorte/services/vo/Usuario.class
+com/mx/banorte/services/route/PerfilesUsuarioRoutes.class

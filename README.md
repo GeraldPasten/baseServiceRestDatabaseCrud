@@ -62,4 +62,5 @@ Ejecutar el ejecutable nativo en un contenedor:
 
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
 
-
+#### Ejecutar analisis Sonar
+mvn clean verify sonar:sonar -Dsonar.test.junit  -Dsonar.projectKey=com.mx.banorte.services:baseservice-rest-databese-crud   -Dsonar.host.url=http://localhost:9000   -Dsonar.login=sqp_bc01d24be7dfd498fe42346cec4144f6619a3712

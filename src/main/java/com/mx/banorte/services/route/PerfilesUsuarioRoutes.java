@@ -73,7 +73,7 @@ public class PerfilesUsuarioRoutes extends RouteBuilder{
                         .toD("jpa://" + PerfilUsuario.class.getName())
                         .doCatch(HibernateException.class, PersistenceException.class)
                         .log("Error al crear el perfil: ${exception.message}")
-                        .setBody(constant("Error al crear el perfil"))
+                        .setBody(constant("Error al crear el perfil "))
                         .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
                         .end();
 

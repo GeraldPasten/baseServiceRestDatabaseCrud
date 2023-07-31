@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.mx.banorte.services.JuntiTestUsuario
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.651 s - in com.mx.banorte.services.JuntiTestUsuario

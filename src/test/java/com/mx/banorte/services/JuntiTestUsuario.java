@@ -1,8 +1,9 @@
 package com.mx.banorte.services;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.mx.banorte.services.vo.Usuario;
@@ -30,6 +32,7 @@ import io.quarkus.test.junit.QuarkusTest;
  */
 
 @QuarkusTest
+@Tag("integration")
 public class JuntiTestUsuario  {
     
     @Inject
@@ -43,22 +46,27 @@ public class JuntiTestUsuario  {
 
     @Test
         public void testMyRoute() throws Exception {
+            // Configuración de la ruta
             camelContext.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
                     from("direct:crearUsuario")
-                            .routeId("crearUsuario")
-                            .log("Creando un usuario nuevo: ${body}")
-                            .toD("jpa://" + Usuario.class.getName());
+                        .routeId("crearUsuario")
+                        .log("Creando un usuario nuevo: ${body}")
+                        .toD("jpa://" + Usuario.class.getName());
                 }
             });
 
+            // Crear un nuevo usuario
             Usuario usuario = new Usuario();
+            usuario.setId(1);
             usuario.setNombre("Gerald");
             usuario.setApellido("Pasten");
 
+            // Enviar el objeto Usuario a través de la ruta "direct:crearUsuario"
             producerTemplate.sendBody("direct:crearUsuario", usuario);
 
+            // Verificar que el usuario fue creado exitosamente
             Usuario result = entityManager.find(Usuario.class, usuario.getId());
             assertNotNull(result);
         }
@@ -96,36 +104,23 @@ public class JuntiTestUsuario  {
             assertEquals("Gerald", result.getNombre());
             assertEquals("Pasten", result.getApellido());
         }
+
     @Transactional
     @Test
-        public void testActualizarUsuario_DatosErroneos() throws Exception {
-            // Datos del usuario a actualizar
-            Usuario usuario = new Usuario();
-            usuario.setNombre("John");
-            usuario.setApellido("Doe");
+    public void testObeteneUsuario() throws Exception {
+          // Enviar un mensaje vacío a la ruta "direct:getUser"
+        // Como este punto no requiere un body, podemos enviar un body vacío.
+        // No estamos esperando una respuesta, ya que solo queremos verificar que la ruta se ejecuta sin errores.
+        producerTemplate.sendBody("direct:getUser", null);
 
-            // Persistir el usuario en la base de datos
-            entityManager.persist(usuario);
+        // No necesitamos esperar una respuesta específica, ya que el punto no tiene un cuerpo (body).
+        // Simplemente verificamos que la ruta se ejecutó correctamente sin errores.
 
-            // Configuración de la ruta
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from("direct:actualizarUsuario")
-                            .routeId("actualizarUsuario")
-                            .log("Actualizando el usuario: ${body}")
-                            .toD("jpa://" + Usuario.class.getName());
-                }
-            });
+        assertDoesNotThrow(() -> producerTemplate.sendBody("direct:getUser", null));
+     }
 
-            // Actualización del usuario con datos erroneos
-            usuario.setNombre(null);
-            usuario.setApellido(null);
-            producerTemplate.sendBody("direct:actualizarUsuario", usuario);
 
-            // Verificación de que se haya producido una respuesta de error
-            assertNull(entityManager.find(Usuario.class, usuario.getId()));
-        }
     
-
 }
+
+

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PerfilesUsuarioRoutes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-application</a> &gt; <a href="index.source.html" class="el_package">com.mx.banorte.services.route</a> &gt; <span class="el_source">PerfilesUsuarioRoutes.java</span></div><h1>PerfilesUsuarioRoutes.java</h1><pre class="source lang-java linenums">package com.mx.banorte.services.route;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import org.apache.camel.Exchange;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestBindingMode;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.hibernate.HibernateException;
+import com.mx.banorte.services.vo.PerfilUsuario;
+
+/*
+ * Clase que define las rutas y configuraciones para levantar endpoints rest con Java DSL 
+ * Anotaciones utilizadas: 
+ * Esta anotación @ApplicationScoped marca la clase como un componente de alcance de aplicación. Indica que la instancia de esta clase será creada una vez por la aplicación y compartida entre múltiples hilos de ejecución.
+ * Esta anotación @Inject se utiliza para realizar la inyección de dependencias en los campos de la clase. Se utiliza para obtener instancias de otros componentes y recursos necesarios para el funcionamiento de la clase.
+ * Esta anotación @ConfigProperty se utiliza para inyectar valores de propiedades de configuración en los campos de la clase.
+ * Esta anotación @Override se utiliza en Java para indicar que un método en una clase está siendo sobrescrito de una clase padre o de una interfaz.
+ * 
+ * Nuestra clase PerfilesUsuarioRoutes debe extenderse de La clase RouteBuilder ya que es una clase proporcionada por Apache Camel que se utiliza para construir y configurar rutas.
+ * Al hacerlo, se debe proporcionar una implementación del método configure(). Dentro de este método, puedes definir tus rutas Camel utilizando el lenguaje de dominio específico de Camel.
+ * 
+ * restConfiguration() Como configurar el modo de enlace JSON en la ruta. Esto indica que los datos se convertirán automáticamente entre formato JSON y objetos Java al utilizar la ruta REST.
+ * rest() Define la ruta base para todas las rutas REST. Todas las rutas definidas después de esto estarán anidadas bajo lo indicado.
+ * get()  Configura endpoint GET en la ruta Este endpoint responderá a las solicitudes GET.
+ * to()   Redirige la solicitud a una ruta, esto significa que cuando se reciba una solicitud GET en el endpoint se activara la ruta a la que se redirige.
+ * 
+ * 
+ * @Author Red Hat 
+ */
+
+@ApplicationScoped
+<span class="fc" id="L34">public class PerfilesUsuarioRoutes extends RouteBuilder{</span>
+
+    @Inject
+        @ConfigProperty(name = &quot;select.perfiles.usuario&quot;)
+        private String perfiles;
+
+        @Override
+        public void configure() throws Exception {
+
+        //Configuracion de Rest BindingMode para recibir y enviar respuesta JSON
+<span class="fc" id="L44">        restConfiguration().bindingMode(RestBindingMode.json);</span>
+
+<span class="fc" id="L46">        rest(&quot;/perfil&quot;) // Define la ruta base para todas las rutas REST relacionadas con &quot;perfil&quot;. Todas las rutas definidas después de esto estarán anidadas bajo &quot;/perfil&quot;.</span>
+<span class="fc" id="L47">                        .get(&quot;perfiles&quot;)</span>
+<span class="fc" id="L48">                        .description(&quot;Obtener Usuario y su perfil&quot;)</span>
+<span class="fc" id="L49">                        .outType(PerfilUsuario.class)</span>
+<span class="fc" id="L50">                        .to(&quot;direct:getUserProfile&quot;)</span>
+
+                         //Creacion de la ruta Camel CreatePerfil
+<span class="fc" id="L53">                        .put(&quot;perfiles/create&quot;)</span>
+<span class="fc" id="L54">                        .description(&quot;Crear perfil asociado a un usuario&quot;)</span>
+<span class="fc" id="L55">                        .type(PerfilUsuario.class)</span>
+<span class="fc" id="L56">                        .to(&quot;direct:createPerfil&quot;);</span>
+
+<span class="fc" id="L58">        from(&quot;direct:getUserProfile&quot;)</span>
+<span class="fc" id="L59">                        .routeId(&quot;getUserPerfil&quot;)</span>
+<span class="fc" id="L60">                        .log(&quot;Obteniendo Usuarios mediante query ...&quot;)</span>
+<span class="fc" id="L61">                        .doTry()</span>
+<span class="fc" id="L62">                        .toD(&quot;jpa://&quot; + PerfilUsuario.class.getName() + &quot;?query=&quot;+perfiles)</span>
+<span class="fc" id="L63">                        .doCatch(HibernateException.class, PersistenceException.class)</span>
+<span class="fc" id="L64">                        .log(&quot;Error al Obtener perfiles de usuario: ${exception.message}&quot;)</span>
+<span class="fc" id="L65">                        .setBody(constant(&quot;Error al Obtener perfiles de usuario&quot;))</span>
+<span class="fc" id="L66">                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(204))</span>
+<span class="fc" id="L67">                        .end();</span>
+
+<span class="fc" id="L69">        from(&quot;direct:createPerfil&quot;)</span>
+<span class="fc" id="L70">                        .routeId(&quot;createUserPerfil&quot;)</span>
+<span class="fc" id="L71">                        .log(&quot;Creando Perfil asociado a id de usuario: ${body}&quot;)</span>
+<span class="fc" id="L72">                        .doTry()</span>
+<span class="fc" id="L73">                        .toD(&quot;jpa://&quot; + PerfilUsuario.class.getName())</span>
+<span class="fc" id="L74">                        .doCatch(HibernateException.class, PersistenceException.class)</span>
+<span class="fc" id="L75">                        .log(&quot;Error al crear el perfil: ${exception.message}&quot;)</span>
+<span class="fc" id="L76">                        .setBody(constant(&quot;Error al crear el perfil &quot;))</span>
+<span class="fc" id="L77">                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))</span>
+<span class="fc" id="L78">                        .end();</span>
+
+<span class="fc" id="L80">        }</span>
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

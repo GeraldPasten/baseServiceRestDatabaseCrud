@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiClientRoutes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-application</a> &gt; <a href="index.source.html" class="el_package">com.mx.banorte.services.route</a> &gt; <span class="el_source">ApiClientRoutes.java</span></div><h1>ApiClientRoutes.java</h1><pre class="source lang-java linenums">package com.mx.banorte.services.route;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestBindingMode;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+
+
+
+@ApplicationScoped
+<span class="fc" id="L13">public class ApiClientRoutes extends RouteBuilder {</span>
+
+@Inject
+@ConfigProperty(name = &quot;basicAuth.credencials&quot;)
+private String credencials;
+
+@Override
+public void configure() throws Exception {
+        //Configuracion de Rest BindingMode para recibir y enviar respuesta JSON
+<span class="fc" id="L22">                restConfiguration().bindingMode(RestBindingMode.json);</span>
+
+<span class="fc" id="L24">                rest(&quot;/extension&quot;)</span>
+                
+<span class="fc" id="L26">                .get(&quot;llamar&quot;)</span>
+<span class="fc" id="L27">                .description(&quot;Llamando a otra api&quot;)</span>
+<span class="fc" id="L28">                .to(&quot;direct:llamada&quot;);</span>
+  
+<span class="fc" id="L30">                from(&quot;direct:llamada&quot;)</span>
+<span class="fc" id="L31">                .routeId(&quot;callService&quot;)</span>
+<span class="fc" id="L32">                .log(&quot;Llamando a un api con seguirdad, Autenticacion Basica y certificado TLS&quot;)</span>
+<span class="fc" id="L33">                .setHeader(&quot;Authorization&quot;, constant(credencials)) </span>
+<span class="fc" id="L34">                .doTry()</span>
+<span class="fc" id="L35">                .toD(&quot;http://localhost:8081/admin?bridgeEndpoint=true&amp;httpMethod=GET&quot;)</span>
+<span class="fc" id="L36">                .log(&quot;Body de llamada: ${body}&quot;)</span>
+<span class="fc" id="L37">                .convertBodyTo(String.class)</span>
+<span class="fc" id="L38">                .setBody(simple(&quot;${body}&quot;))</span>
+<span class="fc" id="L39">                .doCatch(Exception.class)</span>
+<span class="fc" id="L40">                .log(&quot;Error llamar api externa ${exception.message}&quot;)</span>
+<span class="fc" id="L41">                .setBody(constant(&quot;Error llamar api externa &quot;))</span>
+<span class="fc" id="L42">                .end();</span>
+
+<span class="fc" id="L44">    }</span>
+    
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

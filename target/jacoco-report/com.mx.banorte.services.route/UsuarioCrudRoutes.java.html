@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioCrudRoutes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">quarkus-application</a> &gt; <a href="index.source.html" class="el_package">com.mx.banorte.services.route</a> &gt; <span class="el_source">UsuarioCrudRoutes.java</span></div><h1>UsuarioCrudRoutes.java</h1><pre class="source lang-java linenums">package com.mx.banorte.services.route;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import org.apache.camel.Exchange;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestBindingMode;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.hibernate.HibernateException;
+import com.mx.banorte.services.vo.Usuario;
+
+/*
+ * Clase que define las rutas y configuraciones para levantar endpoints rest con Java DSL 
+ * Anotaciones utilizadas: 
+ * Esta anotación @ApplicationScoped marca la clase como un componente de alcance de aplicación. Indica que la instancia de esta clase será creada una vez por la aplicación y compartida entre múltiples hilos de ejecución.
+ * Esta anotación @Inject se utiliza para realizar la inyección de dependencias en los campos de la clase. Se utiliza para obtener instancias de otros componentes y recursos necesarios para el funcionamiento de la clase.
+ * Esta anotación @ConfigProperty se utiliza para inyectar valores de propiedades de configuración en los campos de la clase.
+ * Esta anotación @Override se utiliza en Java para indicar que un método en una clase está siendo sobrescrito de una clase padre o de una interfaz.
+ * 
+ * Nuestra clase PerfilesUsuarioRoutes debe extenderse de La clase RouteBuilder ya que es una clase proporcionada por Apache Camel que se utiliza para construir y configurar rutas.
+ * Al hacerlo, se debe proporcionar una implementación del método configure(). Dentro de este método, puedes definir tus rutas Camel utilizando el lenguaje de dominio específico de Camel.
+ * 
+ * restConfiguration() Como configurar el modo de enlace JSON en la ruta. Esto indica que los datos se convertirán automáticamente entre formato JSON y objetos Java al utilizar la ruta REST.
+ * rest() Define la ruta base para todas las rutas REST. Todas las rutas definidas después de esto estarán anidadas bajo lo indicado.
+ * get()  Configura endpoint GET en la ruta Este endpoint responderá a las solicitudes GET.
+ * to()   Redirige la solicitud a una ruta, esto significa que cuando se reciba una solicitud GET en el endpoint se activara la ruta a la que se redirige.
+ *
+ * @Author Red Hat 
+ */
+
+@ApplicationScoped
+<span class="fc" id="L35">public class UsuarioCrudRoutes extends RouteBuilder {</span>
+
+        @Inject
+        @ConfigProperty(name = &quot;select.usuarios&quot;)
+        private String query;
+
+        @Inject
+        @ConfigProperty(name = &quot;delete.usuarios&quot;)
+        private String delete;
+
+        @Override
+        public void configure() throws Exception {
+
+                //Configuracion de Rest BindingMode para recibir y enviar respuesta JSON
+<span class="fc" id="L49">                restConfiguration().bindingMode(RestBindingMode.json);  </span>
+
+                // Definicion del punto REST
+<span class="fc" id="L52">                rest(&quot;/usuario&quot;)</span>
+                        
+                        //Creacion de la ruta Camel getUser
+<span class="fc" id="L55">                        .get(&quot;obtener&quot;)</span>
+<span class="fc" id="L56">                        .description(&quot;Details of an user by id&quot;)</span>
+<span class="fc" id="L57">                        .outType(Usuario.class)</span>
+<span class="fc" id="L58">                        .to(&quot;direct:getUser&quot;)</span>
+   
+                        //Creacion de la ruta Camel crearUsuario
+<span class="fc" id="L61">                        .put(&quot;create&quot;)</span>
+<span class="fc" id="L62">                        .description(&quot;Crear un nuevo usuario&quot;)</span>
+<span class="fc" id="L63">                        .type(Usuario.class)</span>
+<span class="fc" id="L64">                        .to(&quot;direct:crearUsuario&quot;)</span>
+
+                        //Creacion de la ruta Camel updateUsuario
+<span class="fc" id="L67">                        .put(&quot;update&quot;)</span>
+<span class="fc" id="L68">                        .description(&quot;Actualizar un usuario&quot;)</span>
+<span class="fc" id="L69">                        .type(Usuario.class)</span>
+<span class="fc" id="L70">                        .to(&quot;direct:updateUsuario&quot;)</span>
+
+                        //Creacion de la ruta Camel deleteUsuario
+<span class="fc" id="L73">                        .delete(&quot;/{id}&quot;)</span>
+<span class="fc" id="L74">                        .consumes(&quot;application/json&quot;)</span>
+<span class="fc" id="L75">                        .description(&quot;Eliminar un usuario&quot;)</span>
+<span class="fc" id="L76">                        .type(Usuario.class)</span>
+<span class="fc" id="L77">                        .to(&quot;direct:deleteUsuario&quot;);</span>
+
+<span class="fc" id="L79">                        from(&quot;direct:getUser&quot;)</span>
+<span class="fc" id="L80">                        .routeId(&quot;getUserPerRoute&quot;)</span>
+<span class="fc" id="L81">                        .log(&quot;Obteniendo Usuarios mediante query ...&quot;)</span>
+<span class="fc" id="L82">                        .doTry()</span>
+<span class="fc" id="L83">                        .toD(&quot;jpa://&quot; + Usuario.class.getName()+ &quot;?query=&quot;+query)</span>
+<span class="fc" id="L84">                        .process(exchange -&gt; {</span>
+                                @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L86">                                List&lt;String[]&gt; resultados = exchange.getIn().getBody(ArrayList.class);</span>
+<span class="fc" id="L87">                                List&lt;Usuario&gt; usuarios = new ArrayList&lt;&gt;();          </span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                                for (Object[] resultado :  resultados) {    </span>
+<span class="fc" id="L89">                                Usuario usuario = new Usuario();</span>
+<span class="fc" id="L90">                                usuario.setId(0);</span>
+<span class="fc" id="L91">                                usuario.setNombre(&quot;Su nombre completo es: &quot;+resultado[0].toString() + &quot; &quot; +resultado[1].toString());</span>
+<span class="fc" id="L92">                                usuario.setApellido(&quot;Su apellido modificado es: &quot;+resultado[1].toString() +&quot; Cabrera&quot;);</span>
+<span class="fc" id="L93">                                usuarios.add(usuario);</span>
+                                }
+<span class="fc" id="L95">                                exchange.getIn().setBody(usuarios);</span>
+<span class="fc" id="L96">                        })</span>
+<span class="fc" id="L97">                        .doCatch(HibernateException.class, PersistenceException.class)</span>
+<span class="fc" id="L98">                        .log(&quot;Error al Obtener usuarios: ${exception.message}&quot;)</span>
+<span class="fc" id="L99">                        .setBody(constant(&quot;Error al obtener usuario&quot;))</span>
+<span class="fc" id="L100">                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(204))</span>
+<span class="fc" id="L101">                        .end();</span>
+
+<span class="fc" id="L103">                        from(&quot;direct:crearUsuario&quot;)</span>
+<span class="fc" id="L104">                        .routeId(&quot;crearUsuario&quot;)</span>
+<span class="fc" id="L105">                        .log(&quot;Creando un usuario nuevo: ${body}&quot;)</span>
+<span class="fc" id="L106">                        .doTry()</span>
+<span class="fc" id="L107">                        .toD(&quot;jpa://&quot; + Usuario.class.getName())</span>
+<span class="fc" id="L108">                        .doCatch(HibernateException.class, PersistenceException.class)</span>
+<span class="fc" id="L109">                        .log(&quot;Error al Obtener usuarios: ${exception.message}&quot;)</span>
+<span class="fc" id="L110">                        .setBody(constant(&quot;Error al crear usuario&quot;))</span>
+<span class="fc" id="L111">                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))</span>
+<span class="fc" id="L112">                        .end();</span>
+
+<span class="fc" id="L114">                        from(&quot;direct:updateUsuario&quot;)</span>
+<span class="fc" id="L115">                        .routeId(&quot;updateUsuario&quot;).log(&quot;Probando actualizar usuario&quot;)</span>
+<span class="fc" id="L116">                        .doTry()</span>
+<span class="fc" id="L117">                        .to(&quot;jpa://&quot;+ Usuario.class.getName() +&quot;?useExecuteUpdate=true&quot;)</span>
+<span class="fc" id="L118">                        .log(&quot;Error al Obtener usuarios: ${exception.message}&quot;)</span>
+<span class="fc" id="L119">                        .setBody(constant(&quot;Error al actualizar usuario&quot;))</span>
+<span class="fc" id="L120">                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))</span>
+<span class="fc" id="L121">                        .end();</span>
+
+<span class="fc" id="L123">                        from(&quot;direct:deleteUsuario&quot;)</span>
+<span class="fc" id="L124">                        .doTry()</span>
+<span class="fc" id="L125">                        .toD(&quot;jpa://&quot;+Usuario.class.getName()+&quot;?query=&quot;+delete +&quot;=&quot;+&quot;${header.id}&amp;useExecuteUpdate=true&quot;)</span>
+<span class="fc" id="L126">                        .doCatch(HibernateException.class, PersistenceException.class)</span>
+<span class="fc" id="L127">                        .log(&quot;Error al Obtener usuarios: ${exception.message}&quot;)</span>
+<span class="fc" id="L128">                        .setBody(constant(&quot;Error al eliminar usuario&quot;))</span>
+<span class="fc" id="L129">                        .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))</span>
+<span class="fc" id="L130">                        .end();</span>
+
+                        
+
+<span class="fc" id="L134">        }  </span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
